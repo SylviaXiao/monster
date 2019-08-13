@@ -2,7 +2,7 @@
     <div>
         <div class="mui-numbox" data-numbox-step='1' data-numbox-min='1' :data-numbox-max='maxnum'>
             <button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
-            <input class="mui-numbox-input" type="number" ref="num" @change="countChange()"/>
+            <input class="mui-numbox-input"  type="number" :value="nums" ref="num" @change="countChange()"/>
             <button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
         </div>
     </div>
@@ -15,10 +15,10 @@
         mounted(){
             mui('.mui-numbox').numbox()
         },
-        props:['maxnum'],
+        props:['maxnum',"nums","id"],
         methods:{
             countChange(){
-                this.$emit('getCount',parseInt(this.$refs.num.value))
+                this.$emit('getCount',{value:parseInt(this.$refs.num.value),id:this.id})
             }
         },
         watch:{

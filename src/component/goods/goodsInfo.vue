@@ -9,7 +9,7 @@
         <hr>
         <p><del>市场价：{{ goodsInfo.market_price}}</del> <strong>销售价：{{ goodsInfo.sell_price}}</strong></p>
         <p>购买数量</p>
-        <number :maxnum="goodsInfo.stock_quantity" @getCount="getCount"></number>
+        <number :id="ids" :nums="nums" :maxnum="goodsInfo.stock_quantity" @getCount="getCount"></number>
         <!--<div class="input">-->
             <!--<button @click="reduce()">-</button>-->
             <!--<input type="text" :value="num">-->
@@ -37,7 +37,7 @@
                 <h4>{{ goodsInfo1.title}}</h4>
                 <div v-html="goodsInfo1.content"></div>
             </div>
-            <mt-button @click="flagcomt=!flagcomt"  plain type="danger" class="comt"  size="large">商品评论</mt-button>
+            <mt-button @click="flagcomt=!flagcomt"   plain type="danger" class="comt"  size="large">商品评论</mt-button>
             <!--//3.子组件站位-->
             <comments v-show="flagcomt" :cmts=" id "></comments>
         </div>
@@ -53,10 +53,12 @@
         //2.注册子组件
         components:{
             comments,
-            number
+            number,
         },
         data(){
             return {
+                ids:0,
+                nums:1,
                 isShow: false,
                 flag: false,
                 goodsImg:[],
@@ -123,7 +125,7 @@
             /*************************************************************************************/
             getCount(val){
                 // console.log('我的value值是'+val);
-                this.num=val;
+                this.num=val.value;
             },
             getgoodsInfo(){
                 this.$axios.get('http://www.liulongbin.top:3005/api/goods/getinfo/'+this.id)

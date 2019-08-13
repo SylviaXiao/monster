@@ -2,13 +2,16 @@
     <div>
         <ul >
             <li  v-for="(item,index) in shopList" :key="item.id">
-                   <div class="img"><mt-switch v-model="$store.getters.getGoodsSelected[item.id]"></mt-switch> <img  :src="item.thumb_path"></div>
+                   <div class="img">
+                       <mt-switch v-model="$store.getters.getGoodsSelected[item.id]" @change="toggleShop({
+                       id:item.id,value:$store.getters.getGoodsSelected[item.id]
+                       })">
+                   </mt-switch> <img  :src="item.thumb_path"></div>
                     <div class="body">
                         <h4>{{ item.title}}</h4>
                         <strong>{{ item.sell_price}}</strong>
-                        <button>-</button>
-                        <input type="text" :value="$store.state.car[index].count">
-                        <button>+</button>
+                        <!--//3.子组件站位-->
+                        <number :id="item.id" :nums="$store.state.car[index].count" :maxnum="item.stock_quantity" @getCount="getCount"></number>
                         <a href="javascript:;" @click="removeShop(index,item.id)">删除</a>
                     </div>
             </li>
@@ -21,17 +24,27 @@
 </template>
 
 <script>
+    //1.引入子组件内容
+    import number from '../common/number.vue'
     export default {
         name: "shopcart",
+        //2.注册子组件
+        components:{
+            number
+        },
         data(){
             return {
-                shopList:[]
+                shopList:[],
             }
         },
         created(){
             this.getShopList()
         },
         methods:{
+            getCount(val){
+                console.log(val);
+                this.$store.commit('getSingleCount',{id:val.id,count:val.value})
+            },
             //渲染购物车页面
             getShopList(){
                 let ids=[];
@@ -53,10 +66,9 @@
                 this.$store.commit('removeShoplist',id)
             },
             // 点击切换徽标状态
-            // toggleShop(index,id){
-            //     this.shopList[index].selected=!this.shopList[index].selected;
-            //     this.$store.commit('toggleSelected',id)
-            // },
+            toggleShop(obj){
+                this.$store.commit('toggleSelected',obj)
+            },
         }
     }
 </script>

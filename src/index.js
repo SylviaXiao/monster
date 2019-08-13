@@ -38,7 +38,7 @@ router.afterEach((to,from)=>{
 import Vuex from 'vuex'
 Vue.use(Vuex)
 //每次加载页面时, 先从本地缓存中获取数据
-let car = JSON.parse(localStorage.getItem("shopCar"));
+let car = JSON.parse(localStorage.getItem("shopCar")||'[]');
 const store = new Vuex.Store({
     state:{
         car:car
@@ -75,15 +75,26 @@ const store = new Vuex.Store({
             return true;
         },
         //点击切换购买状态
-        // toggleSelected(state,id){
-        //     state.car.forEach((item,index)=>{
-        //         if(item.id==id){
-        //             state.car[index].selected=!state.car[index].selected;
-        //         }
-        //     })
-        //     localStorage.setItem('shopCar',JSON.stringify(state.car));
-        //     return true;
-        // }
+        toggleSelected(state,obj){
+            state.car.forEach((item,index)=>{
+                if(item.id==obj.id){
+                    state.car[index].selected=obj.value;
+                }
+            })
+            localStorage.setItem('shopCar',JSON.stringify(state.car));
+            return true;
+        },
+        //设置count
+        getSingleCount(state,obj){
+            state.car.forEach((item,index)=>{
+                if(item.id==obj.id){
+                    state.car[index].count=obj.count
+                    return true;
+                }
+            })
+            localStorage.setItem('shopCar',JSON.stringify(state.car));
+        },
+
     },
     getters:{
         //设置徽标个数
@@ -95,6 +106,7 @@ const store = new Vuex.Store({
             })
             return c;
         },
+
         //设置商品数据的状态
         getGoodsSelected(state){
             // state.car = JSON.parse(localStorage.getItem("shopCar"));
@@ -111,12 +123,11 @@ const store = new Vuex.Store({
             total.count=0;
             total.amount=0;
             state.car.forEach((item,index)=>{
-                total.count+=item.count;
-                total.amount+=item.count*item.price;
-                console.log(total.count);
-                console.log(total.amount);
+               if(item.selected){
+                   total.count+=item.count;
+                   total.amount+=item.count*item.price;
+               }
             })
-            console.log(total);
             return total;
         }
     },
