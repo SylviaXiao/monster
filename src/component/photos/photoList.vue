@@ -32,7 +32,7 @@
                 cateList:[]
             }
         },
-        monted(){
+        mounted(){
             mui('.mui-scroll-wrapper').scroll({
                 scrollX: true, //是否竖向滚动
                 scrollY: false, //是否横向滚动

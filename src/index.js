@@ -30,9 +30,101 @@ Vue.filter('dateFormat',function (datastr,partern="YYYY-MM-DD HH:mm:ss") {
 //导入图片预览插件
 import VuePreview from 'vue-preview'
 Vue.use(VuePreview)
+router.afterEach((to,from)=>{
+    window.scrollTo(0,0)
+})
+
+//导入vuex
+import Vuex from 'vuex'
+Vue.use(Vuex)
+//每次加载页面时, 先从本地缓存中获取数据
+let car = JSON.parse(localStorage.getItem("shopCar"));
+const store = new Vuex.Store({
+    state:{
+        car:car
+    },
+    mutations:{
+        //1.点击加入购物车, 把数据保存到store的car中
+        addToCar(state, goodsList){
+            //分析: ①如果之前有对应的商品, 只需要更新数据,
+            //      ②如果没有对应的, 直接把商品push进去
+            let flag = true;
+            state.car.forEach( item => {
+                if(item.id == goodsList.id){
+                    //更新数据
+                    item.count += parseInt(goodsList.count);
+                    flag = false;
+                    return true;
+                }
+            })
+            if(flag){
+                //如果没有找到
+                state.car.push(goodsList);
+            }
+            //把数据存储到本地缓存中去
+            localStorage.setItem('shopCar',JSON.stringify(state.car));
+        },
+        //删除
+        removeShoplist(state,id){
+            state.car.forEach((item,index)=>{
+                if(item.id==id){
+                    state.car.splice(index,1);
+                }
+            })
+            localStorage.setItem('shopCar',JSON.stringify(state.car));
+            return true;
+        },
+        //点击切换购买状态
+        // toggleSelected(state,id){
+        //     state.car.forEach((item,index)=>{
+        //         if(item.id==id){
+        //             state.car[index].selected=!state.car[index].selected;
+        //         }
+        //     })
+        //     localStorage.setItem('shopCar',JSON.stringify(state.car));
+        //     return true;
+        // }
+    },
+    getters:{
+        //设置徽标个数
+        getAllCount(state){
+            // state.car = JSON.parse(localStorage.getItem("shopCar"));
+            let c=0;
+            state.car.forEach(item=>{
+                c+=item.count;
+            })
+            return c;
+        },
+        //设置商品数据的状态
+        getGoodsSelected(state){
+            // state.car = JSON.parse(localStorage.getItem("shopCar"));
+            let selected={};
+            state.car.forEach(item=>{
+                selected[item.id]=item.selected;
+                // selected[item.count]=item.count;
+            })
+            return selected;
+        },
+        //计算总价
+        getTotal(state){
+            let total={};
+            total.count=0;
+            total.amount=0;
+            state.car.forEach((item,index)=>{
+                total.count+=item.count;
+                total.amount+=item.count*item.price;
+                console.log(total.count);
+                console.log(total.amount);
+            })
+            console.log(total);
+            return total;
+        }
+    },
+})
 //3.初始化Vue
 new Vue({
     el:'#app',
     render: c=> c(App),
-    router
+    router,
+    store
 })

@@ -29,6 +29,9 @@ const router =new VueRouter({
         {path:'/home/goodsList',component:GoodsList},
         {path:'/home/goodsinfo/',component:Goodsinfo},
     ],
+    // scrollBehavior (to, from, savedPosition) {
+    //     return { x: 0, y: 0 }
+    // },
     linkActiveClass:'mui-active'
 })
 export default router;
