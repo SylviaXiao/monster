@@ -42,7 +42,7 @@
         },
         methods:{
             getCount(val){
-                console.log(val);
+                console.log(val.id);
                 this.$store.commit('getSingleCount',{id:val.id,count:val.value})
             },
             //渲染购物车页面

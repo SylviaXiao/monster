@@ -89,10 +89,10 @@ const store = new Vuex.Store({
             state.car.forEach((item,index)=>{
                 if(item.id==obj.id){
                     state.car[index].count=obj.count
-                    return true;
                 }
             })
             localStorage.setItem('shopCar',JSON.stringify(state.car));
+            return true;
         },
 
     },
